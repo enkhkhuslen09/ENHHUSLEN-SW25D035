@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хэрэглэгч хадгалах</title>
+</head>
+<body>
+    <input type="text" id="ner" placeholder="NER Оруул">
+    <input type="text" id="ovog" placeholder="OVOG Оруул">
+    <button id="btn">Хадгалах</button>
+
+    <div id="show" style="background-color: yellow; padding: 10px; border: 1px solid;"></div>
+
+    <script>
+        const nerInput = document.getElementById("ner");
+        const ovogInput = document.getElementById("ovog");
+        const show = document.getElementById("show");
+        const btn = document.getElementById("btn");
+
+        let saveArray;
+        try {
+            const data = localStorage.getItem("hunStorage");
+            saveArray = data ? JSON.parse(data) : [];
+            if (!Array.isArray(saveArray)) saveArray = [];
+        } catch (e) {
+            saveArray = [];
+        }
+
+        function renderList() {
+            show.innerHTML = "";
+            saveArray.forEach(function(hun, index){
+                const div = document.createElement("div");
+                div.innerHTML = `${index+1}. Нэр: ${hun.ner} | Овог: ${hun.ovog}`;
+                show.appendChild(div);
+            });
+        }
+
+        btn.addEventListener("click", function () {
+            if (nerInput.value.trim() === "" || ovogInput.value.trim() === "") {
+                alert();
+                return;
+            }
+
+            const hunObject = {
+                ner: nerInput.value,
+                ovog: ovogInput.value
+            };
+
+            saveArray.push(hunObject); 
+            localStorage.setItem("hunStorage", JSON.stringify(saveArray)); 
+
+            renderList();
+
+            nerInput.value = "";
+            ovogInput.value = "";
+        });
+
+        renderList();
+    </script>
+</body>
+</html>
